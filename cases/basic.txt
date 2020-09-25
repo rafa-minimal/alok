@@ -1,0 +1,37 @@
+-- TEST
+12.04
+    T-1 1h coś tam dłubałem
+13.04
+    T-1 1h coś tam dalej...
+
+-- EXPECTED
+12.04
+    T-1 1h coś tam dłubałem
+13.04
+    T-1 1h coś tam dalej...
+
+-- TEST
+> debug
+12.04
+  T-1 1h coś tam dłubałem
+13.04
+  T-1 1h coś tam dalej...
+
+-- EXPECTED
+> debug                                 ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
+12.04
+  T-1 1h coś tam dłubałem
+13.04
+  T-1 1h coś tam dalej...
+
+-- TEST
+jeden
+> verbose
+>debug
+>dry
+
+-- EXPECTED
+jeden
+> verbose                               ✔ Using verbose
+>debug                                  ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
+>dry                                    ✔ Using dry

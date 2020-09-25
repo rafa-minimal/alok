@@ -1,0 +1,7 @@
+# Sample allocations
+> verbose
+
+12.04
+  support - 1h
+13.04
+14.04
