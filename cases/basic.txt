@@ -5,10 +5,10 @@
     T-1 1h coś tam dalej...
 
 -- EXPECTED
-12.04
-    T-1 1h coś tam dłubałem
-13.04
-    T-1 1h coś tam dalej...
+12.04 niedz.
+    T-1 1h coś tam dłubałem             ❌ Don't know what to do with this line
+13.04 pon.
+    T-1 1h coś tam dalej...             ❌ Don't know what to do with this line
 
 -- TEST
 > debug
@@ -19,10 +19,10 @@
 
 -- EXPECTED
 > debug                                 ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
-12.04
-  T-1 1h coś tam dłubałem
-13.04
-  T-1 1h coś tam dalej...
+12.04 niedz.
+  T-1 1h coś tam dłubałem               ❌ Don't know what to do with this line
+13.04 pon.
+  T-1 1h coś tam dalej...               ❌ Don't know what to do with this line
 
 -- TEST
 jeden
@@ -31,7 +31,8 @@ jeden
 >dry
 
 -- EXPECTED
-jeden
+jeden                                   ❌ Don't know what to do with this line
 > verbose                               ✔ Using verbose
 >debug                                  ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
 >dry                                    ✔ Using dry
+

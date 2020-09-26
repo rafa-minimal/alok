@@ -1,6 +1,7 @@
 package pl.minimal.alok
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 enum class Level(val char: Char, val priority: Int) {
     Error('❌', 1),
@@ -13,11 +14,15 @@ enum class Level(val char: Char, val priority: Int) {
 
 const val UPLOADED = "★"
 
-data class Context(
-    var flags: Set<Flag>,
-    var date: LocalDate? = null,
+class Context {
+    var flags: MutableSet<Flag> = mutableSetOf()
+    var date: LocalDate? = null
+    val today: LocalDate = LocalDate.now()
     val logs: MutableList<Pair<Level, String>> = mutableListOf()
-)
+    val aliases: MutableMap<String, Entry> = mutableMapOf()
+    val entries: MutableList<Entry> = mutableListOf()
+    lateinit var dateLine: Line
+}
 
 enum class Flag {
     upload, dry, quiet, verbose;
@@ -28,7 +33,7 @@ enum class Flag {
 }
 
 data class Line(
-    val content: String,
+    var content: String,
     val uploaded: Boolean,
     val logs: MutableList<Pair<Level, String>> = mutableListOf()
 ) {
@@ -72,3 +77,17 @@ data class Line(
             first.fill(margin) + second
         }
 }
+
+private val dateFormat = DateTimeFormatter.ISO_LOCAL_DATE
+
+data class Entry(
+    val date: LocalDate,
+    val typ: String,
+    val task: String,
+    val centrum: String,
+    val time: Double
+) {
+    fun toCsvLine() = "${date.format(dateFormat)}\t$typ\t$task\t$centrum\trgl\t$time"
+}
+
+fun playEntry(date: LocalDate, task: String, time: Double) = Entry(date, "P4", task, "CoreTech CDN", time)
