@@ -14,10 +14,9 @@ enum class Level(val char: Char, val priority: Int) {
 
 const val UPLOADED = "★"
 
-class Context {
+class Context(val today: LocalDate) {
     var flags: MutableSet<Flag> = mutableSetOf()
     var date: LocalDate? = null
-    val today: LocalDate = LocalDate.now()
     val logs: MutableList<Pair<Level, String>> = mutableListOf()
     val aliases: MutableMap<String, Entry> = mutableMapOf()
     val entries: MutableList<Entry> = mutableListOf()

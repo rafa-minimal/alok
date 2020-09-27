@@ -1,28 +1,28 @@
 -- TEST
-12.04
-    T-1 1h coś tam dłubałem
+12.04 niedz. (pierwszy dzień alokacji)
+    ITDEVESP-123 - 1h coś tam dłubałem
 13.04
-    T-1 1h coś tam dalej...
+    ITDEVESP-123 - 1h coś tam dalej...
 
 -- EXPECTED
-12.04 niedz.
-    T-1 1h coś tam dłubałem             ❌ Don't know what to do with this line
+12.04 niedz. (pierwszy dzień alokacji)
+    ITDEVESP-123 - 1h coś tam dłubałem
 13.04 pon.
-    T-1 1h coś tam dalej...             ❌ Don't know what to do with this line
+    ITDEVESP-123 - 1h coś tam dalej...
 
 -- TEST
 > debug
 12.04
-  T-1 1h coś tam dłubałem
+  ITDEVESP-123 - 1h coś tam dłubałem
 13.04
-  T-1 1h coś tam dalej...
+  ITDEVESP-123 - 1h coś tam dalej...
 
 -- EXPECTED
 > debug                                 ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
 12.04 niedz.
-  T-1 1h coś tam dłubałem               ❌ Don't know what to do with this line
+  ITDEVESP-123 - 1h coś tam dłubałem
 13.04 pon.
-  T-1 1h coś tam dalej...               ❌ Don't know what to do with this line
+  ITDEVESP-123 - 1h coś tam dalej...
 
 -- TEST
 jeden

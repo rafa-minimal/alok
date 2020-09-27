@@ -19,7 +19,9 @@ fun main(args: Array<String>) {
         return
     }
 
-    val loop = ReadWriteLoop(path, 1000, ::process)
+    val loop = ReadWriteLoop(path, 1000) { lines ->
+        process(lines)
+    }
     Runtime.getRuntime().addShutdownHook(Thread { loop.stop() })
     loop.run()
 }

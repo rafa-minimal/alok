@@ -11,12 +11,12 @@ private val logsSplitPattern = """\s*[${Level.chars}]""".toRegex()
 
 private fun stripLogs(line: String) = line.split(logsSplitPattern, 2)[0]
 
-fun process(rawLines: List<String>): List<String> {
+fun process(rawLines: List<String>, today: LocalDate = LocalDate.now()): List<String> {
     val lines = rawLines.map { line ->
         val content = stripLogs(line)
         Line(content, content.contains(UPLOADED))
     }
-    val ctx = Context()
+    val ctx = Context(today = today)
     lines.forEach { process(ctx, it) }
 
     val margin = max(lines.map { it.content.length + 1 }.max() ?: 0, MIN_MARGIN)
@@ -83,7 +83,7 @@ fun processDate(ctx: Context, line: Line): Boolean {
     return true
 }
 
-private val alokRegexp = """^\s*([\w -]+)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
+private val alokRegexp = """^\s*([\w\d -]+)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
 
 fun processAlok(ctx: Context, line: Line): Boolean {
     val match = alokRegexp.find(line.content) ?: return false

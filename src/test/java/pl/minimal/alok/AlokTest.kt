@@ -10,24 +10,20 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.lang.StringBuilder
 import java.nio.file.Files
 import java.nio.file.Path
+import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 import kotlin.streams.asSequence
 import kotlin.streams.asStream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class AlokTest {
+internal class AlokTest {
 
     private val results: MutableMap<Path, StringBuilder> = mutableMapOf()
 
-    @BeforeAll
-    fun beforeAll() {
-
-    }
-
     @AfterAll
     fun dumpActualResults() {
-        // Returns 1 if file is modified
+        // Returns 1 if content is modified
         val process = ProcessBuilder("git diff-index --quiet HEAD -- cases/".split(" ").toList())
             .redirectOutput(ProcessBuilder.Redirect.INHERIT)
             .redirectError(ProcessBuilder.Redirect.INHERIT)
@@ -50,7 +46,9 @@ class AlokTest {
     @ParameterizedTest
     @MethodSource("cases")
     fun test(file: Path, input: String, expected: String) {
-        val actual = process(input.lines())
+        val mockToday = LocalDate.of(2020, 9, 27)
+
+        val actual = process(input.lines(), mockToday)
             .joinToString("\n")
         results.getOrPut(file){ StringBuilder() }.let {
             it.append("-- TEST\n")
