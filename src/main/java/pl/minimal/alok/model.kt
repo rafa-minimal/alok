@@ -18,7 +18,6 @@ class Context(
     val today: LocalDate,
     val jira: JiraApi
 ) {
-    var cookie: String = ""
     var flags: MutableSet<Flag> = mutableSetOf()
     var date: LocalDate? = null
     val logs: MutableList<Pair<Level, String>> = mutableListOf()

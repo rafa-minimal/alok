@@ -4,6 +4,7 @@ import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.max
+import kotlin.math.min
 
 private const val MIN_MARGIN = 40
 
@@ -11,14 +12,23 @@ private val logsSplitPattern = """\s*[${Level.chars}]""".toRegex()
 
 private fun stripLogs(line: String) = line.split(logsSplitPattern, 2)[0]
 
-fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.now()): List<String> {
-    val lines = rawLines.map { Line(stripLogs(it)) }
-    val ctx = Context(today = today, jira = jira)
-    lines.forEach { process(ctx, it) }
+private const val SEPARATOR = "------"
 
-    val margin = max(lines.map { it.content.length + 1 }.maxOrNull() ?: 0, MIN_MARGIN)
-    return lines.map { it.toString(ctx.flags, margin) }
+fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.now()): List<String> {
+    val lines = rawLines.takeWhile { !it.startsWith(SEPARATOR) }.map { Line(stripLogs(it)) }
+    return try {
+        val ctx = Context(today = today, jira = jira)
+        lines.forEach { process(ctx, it) }
+
+        val margin = min(80, max(lines.map { it.content.length + 1 }.maxOrNull() ?: 0, MIN_MARGIN))
+        lines.map { it.toString(ctx.flags, margin) } + allocationLines(ctx)
+    } catch (e: Exception) {
+        rawLines + listOf(SEPARATOR, e.message ?: e.toString())
+    }
 }
+
+fun allocationLines(ctx: Context): List<String> =
+    listOf(SEPARATOR) + ctx.entries.map { it.toCsvLine() }
 
 
 private val flagPattern = """^>\s?(\w+)""".toRegex()
@@ -39,7 +49,7 @@ fun process(ctx: Context, line: Line) {
 
 fun processCookie(ctx: Context, line: Line): Boolean =
     if (line.content.startsWith("cookie: ")) {
-        ctx.cookie = line.content.substring("cookie: ".length).trim()
+        ctx.jira.cookie = line.content.substring("cookie: ".length).trim()
         line.info("Cookie set")
         true
     } else {

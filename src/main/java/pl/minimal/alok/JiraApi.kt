@@ -37,6 +37,7 @@ data class WorklogList(val maxResults: Int, val total: Int, val worklogs: List<W
 class JiraError(message: String) : RuntimeException(message)
 
 interface JiraApi {
+    var cookie: String
     fun putWorklog(issue: String, date: LocalDate, timeHours: Double): Pair<String, Worklog>
 }
 
@@ -44,7 +45,7 @@ class JiraApiImpl(
     private val user: String = "E.68235581"
 ) : AutoCloseable, JiraApi {
 
-    val cookie: String = ""
+    override var cookie: String = ""
 
     private val base = "https://jira.playmobile.pl/jira/rest/api/latest/issue/"
 

@@ -2,15 +2,14 @@ package pl.minimal.alok
 
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import java.lang.StringBuilder
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 import kotlin.streams.asSequence
@@ -20,6 +19,12 @@ import kotlin.streams.asStream
 internal class AlokTest {
 
     private val results: MutableMap<Path, StringBuilder> = mutableMapOf()
+
+    private val jira = object : JiraApi {
+        override var cookie: String = ""
+        override fun putWorklog(issue: String, date: LocalDate, timeHours: Double): Pair<String, Worklog> =
+            "Uploaded" to Worklog(date.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(), (timeHours * 3600).toInt())
+    }
 
     @AfterAll
     fun dumpActualResults() {
@@ -48,7 +53,7 @@ internal class AlokTest {
     fun test(file: Path, input: String, expected: String) {
         val mockToday = LocalDate.of(2020, 9, 27)
 
-        val actual = process(input.lines(), mockToday)
+        val actual = process(input.lines(), jira, mockToday)
             .joinToString("\n")
         results.getOrPut(file){ StringBuilder() }.let {
             it.append("-- TEST\n")
