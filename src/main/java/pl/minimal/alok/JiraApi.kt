@@ -36,7 +36,7 @@ data class WorklogList(val maxResults: Int, val total: Int, val worklogs: List<W
 
 class JiraError(message: String) : RuntimeException(message)
 
-class JiraApi(
+class JiraApiImpl(
     private val user: String = "E.68235581"
 ) : AutoCloseable {
 
@@ -131,9 +131,4 @@ class JiraApi(
     override fun close() {
         client.close()
     }
-}
-
-fun main() {
-    println(JiraApi().getWorklog("ITDEVESP-2147"))
-    println(JiraApi().putWorklog("ITDEVESP-2147", LocalDate.of(2020,8, 31), 18000 / 3600.0))
 }
