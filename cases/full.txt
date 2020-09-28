@@ -1,0 +1,26 @@
+-- TEST
+# Aliasy name=typ;task;centrum, np.:
+support=;opis;CoreTech CDN
+rekrutacja=;opis;Touk - Szkolenia
+
+# Flagi
+# > verbose
+
+# Alokacje
+12.09
+  ITDEVESP-1 - 2h
+  support    - 1h
+13.09
+-- EXPECTED
+# Aliasy name=typ;task;centrum, np.:
+support=;opis;CoreTech CDN
+rekrutacja=;opis;Touk - Szkolenia
+
+# Flagi
+# > verbose
+
+# Alokacje
+12.09 sob.
+  ITDEVESP-1 - 2h
+  support    - 1h
+13.09 niedz.

@@ -19,7 +19,7 @@ fun process(rawLines: List<String>, today: LocalDate = LocalDate.now()): List<St
     val ctx = Context(today = today)
     lines.forEach { process(ctx, it) }
 
-    val margin = max(lines.map { it.content.length + 1 }.max() ?: 0, MIN_MARGIN)
+    val margin = max(lines.map { it.content.length + 1 }.maxOrNull() ?: 0, MIN_MARGIN)
     return lines.map { it.toString(ctx.flags, margin) }
 }
 
@@ -83,7 +83,7 @@ fun processDate(ctx: Context, line: Line): Boolean {
     return true
 }
 
-private val alokRegexp = """^\s*([\w\d -]+)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
+private val alokRegexp = """^\s*([\w\d -]+?)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
 
 fun processAlok(ctx: Context, line: Line): Boolean {
     val match = alokRegexp.find(line.content) ?: return false
