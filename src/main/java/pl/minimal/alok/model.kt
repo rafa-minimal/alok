@@ -15,6 +15,7 @@ enum class Level(val char: Char, val priority: Int) {
 const val UPLOADED = "★"
 
 class Context(val today: LocalDate) {
+    var cookie: String = ""
     var flags: MutableSet<Flag> = mutableSetOf()
     var date: LocalDate? = null
     val logs: MutableList<Pair<Level, String>> = mutableListOf()
@@ -33,7 +34,6 @@ enum class Flag {
 
 data class Line(
     var content: String,
-    val uploaded: Boolean,
     val logs: MutableList<Pair<Level, String>> = mutableListOf()
 ) {
     private val verboseLevels = Level.values().toSet()

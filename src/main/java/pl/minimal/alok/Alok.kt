@@ -12,10 +12,7 @@ private val logsSplitPattern = """\s*[${Level.chars}]""".toRegex()
 private fun stripLogs(line: String) = line.split(logsSplitPattern, 2)[0]
 
 fun process(rawLines: List<String>, today: LocalDate = LocalDate.now()): List<String> {
-    val lines = rawLines.map { line ->
-        val content = stripLogs(line)
-        Line(content, content.contains(UPLOADED))
-    }
+    val lines = rawLines.map { Line(stripLogs(it)) }
     val ctx = Context(today = today)
     lines.forEach { process(ctx, it) }
 
@@ -29,6 +26,7 @@ private val flagPattern = """^>\s?(\w+)""".toRegex()
 fun process(ctx: Context, line: Line) {
     when {
         line.content.isBlank() -> return
+        processCookie(ctx, line) -> return
         processComment(line) -> return
         processFlag(ctx, line) -> return
         processDate(ctx, line) -> return
@@ -38,6 +36,15 @@ fun process(ctx: Context, line: Line) {
             line.error("Don't know what to do with this line")
     }
 }
+
+fun processCookie(ctx: Context, line: Line): Boolean =
+    if (line.content.startsWith("cookie: ")) {
+        ctx.cookie = line.content.substring("cookie: ".length).trim()
+        line.info("Cookie set")
+        true
+    } else {
+        false
+    }
 
 fun processComment(line: Line): Boolean =
     if (line.content.startsWith('#')) {
@@ -83,7 +90,7 @@ fun processDate(ctx: Context, line: Line): Boolean {
     return true
 }
 
-private val alokRegexp = """^\s*([\w\d -]+?)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
+private val alokRegexp = """^\s*$UPLOADED?\s*([\w\d -]+?)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
 
 fun processAlok(ctx: Context, line: Line): Boolean {
     val match = alokRegexp.find(line.content) ?: return false
@@ -100,8 +107,13 @@ fun processAlok(ctx: Context, line: Line): Boolean {
             ctx.entries.add(entry)
             line.info(entry.toString())
 
-            if (Flag.upload in ctx.flags) {
+            if (Flag.upload in ctx.flags && !line.content.contains(UPLOADED)) {
                 ctx.logs.add(Level.Info to "Uploading $entry")
+                line.content = if (line.content.startsWith("  ")) {
+                    line.content.replaceFirst(" ", UPLOADED)
+                } else {
+                    UPLOADED + ' ' + line.content
+                }
             }
         }
         task in ctx.aliases -> {
