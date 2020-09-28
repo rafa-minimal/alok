@@ -112,6 +112,7 @@ class JiraApiImpl(
                     body = worklog
                     header("Cookie", cookie)
                     header("X-AUSERNAME", user)
+                    header("Content-Type", "application/json")
                 }
                 worklog
             } catch (e: ClientRequestException) {
