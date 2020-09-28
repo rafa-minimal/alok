@@ -14,7 +14,10 @@ enum class Level(val char: Char, val priority: Int) {
 
 const val UPLOADED = "★"
 
-class Context(val today: LocalDate) {
+class Context(
+    val today: LocalDate,
+    val jira: JiraApi
+) {
     var cookie: String = ""
     var flags: MutableSet<Flag> = mutableSetOf()
     var date: LocalDate? = null

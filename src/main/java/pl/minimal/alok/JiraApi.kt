@@ -36,9 +36,13 @@ data class WorklogList(val maxResults: Int, val total: Int, val worklogs: List<W
 
 class JiraError(message: String) : RuntimeException(message)
 
+interface JiraApi {
+    fun putWorklog(issue: String, date: LocalDate, timeHours: Double): Pair<String, Worklog>
+}
+
 class JiraApiImpl(
     private val user: String = "E.68235581"
-) : AutoCloseable {
+) : AutoCloseable, JiraApi {
 
     val cookie: String = ""
 
@@ -119,7 +123,7 @@ class JiraApiImpl(
         }
     }
 
-    fun putWorklog(issue: String, date: LocalDate, timeHours: Double): Pair<String, Worklog> {
+    override fun putWorklog(issue: String, date: LocalDate, timeHours: Double): Pair<String, Worklog> {
         val existing = getWorklog(issue).find { it.started.toLocalDate() == date }
         return if (existing == null) {
             "Added" to addWorklog(issue, date, timeHours)

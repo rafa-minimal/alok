@@ -11,9 +11,9 @@ private val logsSplitPattern = """\s*[${Level.chars}]""".toRegex()
 
 private fun stripLogs(line: String) = line.split(logsSplitPattern, 2)[0]
 
-fun process(rawLines: List<String>, today: LocalDate = LocalDate.now()): List<String> {
+fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.now()): List<String> {
     val lines = rawLines.map { Line(stripLogs(it)) }
-    val ctx = Context(today = today)
+    val ctx = Context(today = today, jira = jira)
     lines.forEach { process(ctx, it) }
 
     val margin = max(lines.map { it.content.length + 1 }.maxOrNull() ?: 0, MIN_MARGIN)
@@ -108,11 +108,16 @@ fun processAlok(ctx: Context, line: Line): Boolean {
             line.info(entry.toString())
 
             if (Flag.upload in ctx.flags && !line.content.contains(UPLOADED)) {
-                ctx.logs.add(Level.Info to "Uploading $entry")
-                line.content = if (line.content.startsWith("  ")) {
-                    line.content.replaceFirst(" ", UPLOADED)
-                } else {
-                    UPLOADED + ' ' + line.content
+                try {
+                    val (result, worklog) = ctx.jira.putWorklog(entry.task, date, time)
+                    line.info("$result, $worklog")
+                    line.content = if (line.content.startsWith("  ")) {
+                        line.content.replaceFirst(" ", UPLOADED)
+                    } else {
+                        UPLOADED + ' ' + line.content
+                    }
+                } catch (e: JiraError) {
+                    line.error(e.message ?: e.toString())
                 }
             }
         }
