@@ -23,12 +23,12 @@ fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.
         val margin = min(80, max(lines.map { it.content.length + 1 }.maxOrNull() ?: 0, MIN_MARGIN))
         lines.map { it.toString(ctx.flags, margin) } + allocationLines(ctx)
     } catch (e: Exception) {
-        rawLines + listOf(SEPARATOR, e.message ?: e.toString())
+        rawLines + listOf(SEPARATOR, e.message ?: e.toString()) + listOf("")
     }
 }
 
 fun allocationLines(ctx: Context): List<String> =
-    listOf(SEPARATOR) + ctx.entries.map { it.toCsvLine() }
+    listOf(SEPARATOR) + ctx.entries.map { it.toCsvLine() } + listOf("")
 
 
 private val flagPattern = """^>\s?(\w+)""".toRegex()

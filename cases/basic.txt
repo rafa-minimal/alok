@@ -12,8 +12,9 @@
 
 
 ------
-2020-04-12	P4	ITDEVESP-123	CoreTech CDN	rgl	1.0
-2020-04-13	P4	ITDEVESP-123	CoreTech CDN	rgl	1.0-- TEST
+2020-04-12	P4	ITDEVESP-123	CoreTech CDN	rgl	1,0
+2020-04-13	P4	ITDEVESP-123	CoreTech CDN	rgl	1,0
+-- TEST
 > debug
 12.04
   ITDEVESP-123 - 1h coś tam dłubałem
@@ -29,8 +30,9 @@
 
 
 ------
-2020-04-12	P4	ITDEVESP-123	CoreTech CDN	rgl	1.0
-2020-04-13	P4	ITDEVESP-123	CoreTech CDN	rgl	1.0-- TEST
+2020-04-12	P4	ITDEVESP-123	CoreTech CDN	rgl	1,0
+2020-04-13	P4	ITDEVESP-123	CoreTech CDN	rgl	1,0
+-- TEST
 jeden
 > verbose
 >debug
