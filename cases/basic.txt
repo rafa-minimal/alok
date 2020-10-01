@@ -10,7 +10,10 @@
 13.04 pon.
     ITDEVESP-123 - 1h coś tam dalej...
 
--- TEST
+
+------
+2020-04-12	P4	ITDEVESP-123	CoreTech CDN	rgl	1.0
+2020-04-13	P4	ITDEVESP-123	CoreTech CDN	rgl	1.0-- TEST
 > debug
 12.04
   ITDEVESP-123 - 1h coś tam dłubałem
@@ -24,7 +27,10 @@
 13.04 pon.
   ITDEVESP-123 - 1h coś tam dalej...
 
--- TEST
+
+------
+2020-04-12	P4	ITDEVESP-123	CoreTech CDN	rgl	1.0
+2020-04-13	P4	ITDEVESP-123	CoreTech CDN	rgl	1.0-- TEST
 jeden
 > verbose
 >debug
@@ -36,3 +42,5 @@ jeden                                   ❌ Don't know what to do with this line
 >debug                                  ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
 >dry                                    ✔ Using dry
 
+
+------

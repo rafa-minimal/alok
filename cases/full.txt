@@ -24,3 +24,7 @@ rekrutacja=;opis;Touk - Szkolenia
   ITDEVESP-1 - 2h
   support    - 1h
 13.09 niedz.
+
+------
+2020-09-12	P4	ITDEVESP-1	CoreTech CDN	rgl	2.0
+2020-09-12		opis	CoreTech CDN	rgl	1.0
