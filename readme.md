@@ -8,6 +8,14 @@ Java 11, maven
 mvn clean package
 ```
 
+# Install
+Install as a local service (no, `-k` wouldn't work in this case, we need sudo with ansible)
+```
+mvn clean package
+cd ansible
+sudo ansible-playbook install.yml
+```
+
 # Cliet certificate
 In order to use client certificate provide path and key:
 ```
@@ -16,4 +24,5 @@ In order to use client certificate provide path and key:
 ```
 
 # Tests
-Test cases are in `/cases` directory. Results overwrite the input file, so you can easily diff and accept new results. 
+Test cases are in `/cases` directory.
+Results overwrite the input file, so you can easily diff and accept new results. 

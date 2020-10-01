@@ -1,0 +1,22 @@
+[Unit]
+After=multi-user.target
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/share/alok
+User=rgl
+Group=rgl
+EnvironmentFile=/home/rgl/p4/client-cert/cert/pass
+ExecStart=/home/rgl/.sdkman/candidates/java/11.0.6.hs-adpt/bin/java \
+    -Xms128M -Xmx128M \
+    -Djavax.net.ssl.keyStore=/home/rgl/p4/client-cert/cert/B099002395_1002399a.p12 \
+    -Djavax.net.ssl.keyStorePassword=${PASS} \
+    -jar /usr/share/alok/alok.jar \
+    /home/rgl/alok.txt
+KillMode=mixed
+KillSignal=SIGTERM
+SuccessExitStatus=143
+
+TimeoutSec=1m
+RestartSec=60
+Restart=always
