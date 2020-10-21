@@ -50,7 +50,7 @@ fun process(ctx: Context, line: Line) {
 fun processCookie(ctx: Context, line: Line): Boolean =
     if (line.content.startsWith("cookie: ")) {
         ctx.jira.cookie = line.content.substring("cookie: ".length).trim()
-        line.info("Cookie set")
+        line.trace("Cookie set")
         true
     } else {
         false
@@ -58,7 +58,7 @@ fun processCookie(ctx: Context, line: Line): Boolean =
 
 fun processComment(line: Line): Boolean =
     if (line.content.startsWith('#')) {
-        line.info("Comment")
+        line.trace("Comment")
         true
     } else {
         false
@@ -69,7 +69,7 @@ fun processFlag(ctx: Context, line: Line): Boolean {
     val maybeFlag = match.groupValues[1]
     val flag = Flag.values().find { it.name == maybeFlag }
     if (flag != null) {
-        line.info("Using $flag")
+        line.trace("Using $flag")
         ctx.flags.add(flag)
     } else {
         line.warn("Invalid flag: '$maybeFlag', expected one of ${Flag.valuesString}")
@@ -88,7 +88,7 @@ fun processDate(ctx: Context, line: Line): Boolean {
         date = date.minusYears(1)
     }
     ctx.date = date
-    line.info(ctx.date.toString())
+    line.trace(ctx.date.toString())
     // Add day of week name
     val dayName = date.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.forLanguageTag("pl"))
     if (!line.content.contains(dayName)) {
@@ -115,7 +115,7 @@ fun processAlok(ctx: Context, line: Line): Boolean {
         task.startsWith("ITDEVESP-") -> {
             val entry = playEntry(date, task, time)
             ctx.entries.add(entry)
-            line.info(entry.toString())
+            line.trace(entry.toString())
 
             if (Flag.upload in ctx.flags && !line.content.contains(UPLOADED)) {
                 try {
@@ -134,7 +134,7 @@ fun processAlok(ctx: Context, line: Line): Boolean {
         task in ctx.aliases -> {
             val entry = ctx.aliases.getValue(task).copy(date = date, time = time)
             ctx.entries += entry
-            line.info(entry.toString())
+            line.trace(entry.toString())
         }
         else -> {
             line.error("Task '$task' doesn't look like Jira 'ITDEVESP-XXX', neither is on the aliases list: " + ctx.aliases.keys.joinToString())
@@ -150,6 +150,6 @@ fun processAlias(ctx: Context, line: Line): Boolean {
     val (alias, typ, task, centrum) = match.destructured
     val entryTemplate = Entry(ctx.today, typ, task, centrum, 0.0)
     ctx.aliases[alias] = entryTemplate
-    line.info("Alias: $alias -> $entryTemplate")
+    line.trace("Alias: $alias -> $entryTemplate")
     return true
 }

@@ -6,7 +6,8 @@ import java.time.format.DateTimeFormatter
 enum class Level(val char: Char, val priority: Int) {
     Error('❌', 1),
     Warn('❗', 2),
-    Info('✔', 3);
+    Info('✔', 3),
+    Trace('ⓘ', 4);
     companion object {
         val chars = values().map { it.char }.joinToString("", "", "")
     }
@@ -39,7 +40,7 @@ data class Line(
     val logs: MutableList<Pair<Level, String>> = mutableListOf()
 ) {
     private val verboseLevels = Level.values().toSet()
-    private val defaultLevels = setOf(Level.Error, Level.Warn)
+    private val defaultLevels = setOf(Level.Error, Level.Warn, Level.Info)
 
     fun toString(flags: Set<Flag>, margin: Int): String =
         when {
@@ -50,6 +51,10 @@ data class Line(
             else ->
                 joinWithMargin(content, logs(defaultLevels), margin)
         }
+
+    fun trace(msg: String) {
+        logs.add(Level.Trace to msg)
+    }
 
     fun info(msg: String) {
         logs.add(Level.Info to msg)

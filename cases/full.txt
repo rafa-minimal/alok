@@ -26,5 +26,5 @@ rekrutacja=;opis;Touk - Szkolenia
 13.09 niedz.
 
 ------
-2020-09-12	P4	ITDEVESP-1	CoreTech CDN	rgl	2,0
+2020-09-12	P4	ITDEVESP-1	P4 ESP	rgl	2,0
 2020-09-12		opis	CoreTech CDN	rgl	1,0

@@ -12,8 +12,8 @@
 
 
 ------
-2020-04-12	P4	ITDEVESP-123	CoreTech CDN	rgl	1,0
-2020-04-13	P4	ITDEVESP-123	CoreTech CDN	rgl	1,0
+2020-04-12	P4	ITDEVESP-123	P4 ESP	rgl	1,0
+2020-04-13	P4	ITDEVESP-123	P4 ESP	rgl	1,0
 -- TEST
 > debug
 12.04
@@ -30,8 +30,8 @@
 
 
 ------
-2020-04-12	P4	ITDEVESP-123	CoreTech CDN	rgl	1,0
-2020-04-13	P4	ITDEVESP-123	CoreTech CDN	rgl	1,0
+2020-04-12	P4	ITDEVESP-123	P4 ESP	rgl	1,0
+2020-04-13	P4	ITDEVESP-123	P4 ESP	rgl	1,0
 -- TEST
 jeden
 > verbose
@@ -40,9 +40,9 @@ jeden
 
 -- EXPECTED
 jeden                                   ❌ Don't know what to do with this line
-> verbose                               ✔ Using verbose
+> verbose                               ⓘ Using verbose
 >debug                                  ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
->dry                                    ✔ Using dry
+>dry                                    ⓘ Using dry
 
 
 ------
