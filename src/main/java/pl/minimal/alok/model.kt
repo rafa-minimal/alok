@@ -91,4 +91,4 @@ data class Entry(
     fun toCsvLine() = "${date.format(dateFormat)}\t$typ\t$task\t$centrum\trgl\t${time.toString().replace('.',',')}"
 }
 
-fun playEntry(date: LocalDate, task: String, time: Double) = Entry(date, "P4", task, "CoreTech CDN", time)
+fun playEntry(date: LocalDate, task: String, time: Double) = Entry(date, "P4", task, "P4 ESP", time)
