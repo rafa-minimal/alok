@@ -101,6 +101,7 @@ fun processDate(ctx: Context, line: Line): Boolean {
 }
 
 private val alokRegexp = """^\s*$UPLOADED?\s*([\w\d -]+?)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
+private val jiraRegex = """[A-Z]+-[0-9]+""".toRegex()
 
 fun processAlok(ctx: Context, line: Line): Boolean {
     val match = alokRegexp.find(line.content) ?: return false
@@ -112,7 +113,7 @@ fun processAlok(ctx: Context, line: Line): Boolean {
     val (task, timeStr) = match.destructured
     val time = timeStr.replace(',', '.').toDouble()
     when {
-        task.startsWith("ITDEVESP-") -> {
+        task.matches(jiraRegex) -> {
             val entry = playEntry(date, task, time)
             ctx.entries.add(entry)
             line.trace(entry.toString())
@@ -137,7 +138,7 @@ fun processAlok(ctx: Context, line: Line): Boolean {
             line.trace(entry.toString())
         }
         else -> {
-            line.error("Task '$task' doesn't look like Jira 'ITDEVESP-XXX', neither is on the aliases list: " + ctx.aliases.keys.joinToString())
+            line.error("Task '$task' doesn't look like Jira (e.g. 'ABCD-123'), neither is on the aliases list: " + ctx.aliases.keys.joinToString())
         }
     }
     return true
