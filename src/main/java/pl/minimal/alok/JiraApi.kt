@@ -14,6 +14,7 @@ import io.ktor.client.engine.apache.Apache
 import io.ktor.client.features.ClientRequestException
 import io.ktor.client.features.json.JacksonSerializer
 import io.ktor.client.features.json.JsonFeature
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -30,6 +31,7 @@ Couldn't get it working with pattern @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:s
 data class Worklog(
     val started: OffsetDateTime,
     val timeSpentSeconds: Int,
+    val id: String? = null
 )
 
 data class WorklogList(val maxResults: Int, val total: Int, val worklogs: List<Worklog>)
@@ -38,7 +40,7 @@ class JiraError(message: String) : RuntimeException(message)
 
 interface JiraApi {
     var cookie: String
-    fun putWorklog(issue: String, date: LocalDate, timeHours: Double): Pair<String, Worklog>
+    fun putWorklog(issue: String, date: LocalDate, timeSeconds: Int): String
 }
 
 class JiraApiImpl(
@@ -54,7 +56,7 @@ class JiraApiImpl(
             sslContext = SSLContext.getDefault()
         }
         install(JsonFeature) {
-            serializer = JacksonSerializer() {
+            serializer = JacksonSerializer {
                 val dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSxx")
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 registerModule(KotlinModule())
@@ -79,14 +81,14 @@ class JiraApiImpl(
     }
 
 
-    fun getWorklog(issue: String): List<Worklog> =
+    private fun getWorklog(issue: String): List<Worklog> =
         runBlocking {
             try {
                 client.get<WorklogList>("$base$issue/worklog") {
                     header("Cookie", cookie)
                     header("X-AUSERNAME", user)
                 }.let {
-                    if(it.maxResults < it.total) {
+                    if (it.maxResults < it.total) {
                         throw JiraError("Paging not supported, got only ${it.maxResults} out of total ${it.total}")
                     }
                     it.worklogs
@@ -101,10 +103,10 @@ class JiraApiImpl(
         }
 
 
-    fun addWorklog(issue: String, date: LocalDate, timeHours: Double): Worklog {
+    private fun addWorklog(issue: String, date: LocalDate, timeSeconds: Int): Worklog {
         val worklog = Worklog(
             date.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(),
-            (timeHours * 3600).toInt()
+            timeSeconds
         )
         return runBlocking {
             try {
@@ -125,12 +127,33 @@ class JiraApiImpl(
         }
     }
 
-    override fun putWorklog(issue: String, date: LocalDate, timeHours: Double): Pair<String, Worklog> {
-        val existing = getWorklog(issue).find { it.started.toLocalDate() == date }
-        return if (existing == null) {
-            "Added" to addWorklog(issue, date, timeHours)
+    private fun deleteWorklog(issue: String, id: String) = runBlocking {
+        try {
+            client.delete<Unit>("$base$issue/worklog/$id") {
+                header("Cookie", cookie)
+                header("X-AUSERNAME", user)
+            }
+        } catch (e: ClientRequestException) {
+            if (e.response.status.value == 401) {
+                throw JiraError("Unauthorized (401), did you set the cookie?")
+            } else {
+                throw JiraError("Unexpected response: ${e.response.status.value}")
+            }
+        }
+    }
+
+    override fun putWorklog(issue: String, date: LocalDate, timeSeconds: Int): String {
+        val existing = getWorklog(issue).filter { it.started.toLocalDate() == date }
+        return if (existing.isEmpty()) {
+            "Added " + addWorklog(issue, date, timeSeconds)
         } else {
-            "Already exists" to existing
+            val existingTimeSeconds = existing.sumBy { it.timeSpentSeconds }
+            if (existingTimeSeconds == timeSeconds) {
+                "Already logged: $existing"
+            } else {
+                existing.mapNotNull { it.id }.forEach { deleteWorklog(issue, it) }
+                "Replaced $existing, with " + addWorklog(issue, date, timeSeconds)
+            }
         }
     }
 

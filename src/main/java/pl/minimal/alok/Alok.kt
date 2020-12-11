@@ -5,6 +5,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 private const val MIN_MARGIN = 40
 
@@ -23,7 +24,11 @@ fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.
         val margin = min(80, max(lines.map { it.content.length + 1 }.maxOrNull() ?: 0, MIN_MARGIN))
         lines.map { it.toString(ctx.flags, margin) } + allocationLines(ctx)
     } catch (e: Exception) {
-        rawLines + listOf(SEPARATOR, e.message ?: e.toString()) + listOf("")
+        rawLines + listOf(
+            SEPARATOR,
+            e.message ?: e.toString(),
+            ""
+        )
     }
 }
 
@@ -107,21 +112,22 @@ fun processAlok(ctx: Context, line: Line): Boolean {
     val match = alokRegexp.find(line.content) ?: return false
     val date = ctx.date
     if (date == null) {
-        line.error("What date is it? No date found before this entry.")
+        line.error("What date is it? No date found before this line.")
         return true
     }
     val (task, timeStr) = match.destructured
-    val time = timeStr.replace(',', '.').toDouble()
+    val timeDouble = timeStr.replace(',', '.').toDouble()
+    val timeSeconds = (timeDouble * 3600).roundToInt()
     when {
         task.matches(jiraRegex) -> {
-            val entry = playEntry(date, task, time)
+            val entry = playEntry(date, task, timeDouble)
             ctx.entries.add(entry)
             line.trace(entry.toString())
 
             if (Flag.upload in ctx.flags && !line.content.contains(UPLOADED)) {
                 try {
-                    val (result, worklog) = ctx.jira.putWorklog(entry.task, date, time)
-                    line.info("$result, $worklog")
+                    val result= ctx.jira.putWorklog(entry.task, date, timeSeconds)
+                    line.info(result)
                     line.content = if (line.content.startsWith("  ")) {
                         line.content.replaceFirst(" ", UPLOADED)
                     } else {
@@ -133,7 +139,7 @@ fun processAlok(ctx: Context, line: Line): Boolean {
             }
         }
         task in ctx.aliases -> {
-            val entry = ctx.aliases.getValue(task).copy(date = date, time = time)
+            val entry = ctx.aliases.getValue(task).copy(date = date, time = timeDouble)
             ctx.entries += entry
             line.trace(entry.toString())
         }

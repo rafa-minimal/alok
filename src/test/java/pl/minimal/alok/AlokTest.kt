@@ -22,8 +22,8 @@ internal class AlokTest {
 
     private val jira = object : JiraApi {
         override var cookie: String = ""
-        override fun putWorklog(issue: String, date: LocalDate, timeHours: Double): Pair<String, Worklog> =
-            "Uploaded" to Worklog(date.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(), (timeHours * 3600).toInt())
+        override fun putWorklog(issue: String, date: LocalDate, timeSeconds: Int): String =
+            "Uploaded " + Worklog(date.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(), timeSeconds)
     }
 
     @AfterAll
