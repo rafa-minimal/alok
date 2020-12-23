@@ -89,7 +89,7 @@ fun processDate(ctx: Context, line: Line): Boolean {
     val (day, month) = match.destructured
     var date = LocalDate.of(ctx.today.year, month.toInt(), day.toInt())
     // Handle January case
-    if (ctx.today.isBefore(date)) {
+    if (ctx.today.plusMonths(6).isBefore(date)) {
         date = date.minusYears(1)
     }
     ctx.date = date

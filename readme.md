@@ -16,7 +16,7 @@ cd ansible
 sudo ansible-playbook install.yml
 ```
 
-# Cliet certificate
+# Client certificate
 In order to use client certificate provide path and key:
 ```
 -Djavax.net.ssl.keyStore=/home/rgl/cert.p12 
