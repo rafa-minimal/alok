@@ -12,6 +12,9 @@
 
 
 ------
+Total: 2.0h (0.25d)
+ITDEVESP-123	2.0h (0.25d)
+------
 2020-04-12	P4	ITDEVESP-123	P4 ESP	rgl	1,0
 2020-04-13	P4	ITDEVESP-123	P4 ESP	rgl	1,0
 -- TEST
@@ -30,6 +33,9 @@
 
 
 ------
+Total: 2.0h (0.25d)
+ITDEVESP-123	2.0h (0.25d)
+------
 2020-04-12	P4	ITDEVESP-123	P4 ESP	rgl	1,0
 2020-04-13	P4	ITDEVESP-123	P4 ESP	rgl	1,0
 -- TEST
@@ -45,4 +51,6 @@ jeden                                   ❌ Don't know what to do with this line
 >dry                                    ⓘ Using dry
 
 
+------
+Total: 0.0h (0.0d)
 ------

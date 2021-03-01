@@ -22,7 +22,9 @@ fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.
         lines.forEach { process(ctx, it) }
 
         val margin = min(80, max(lines.map { it.content.length + 1 }.maxOrNull() ?: 0, MIN_MARGIN))
-        lines.map { it.toString(ctx.flags, margin) } + allocationLines(ctx)
+        lines.map { it.toString(ctx.flags, margin) } +
+                summaryLines(ctx) +
+                allocationLines(ctx)
     } catch (e: Exception) {
         rawLines + listOf(
             SEPARATOR,
@@ -31,6 +33,11 @@ fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.
         )
     }
 }
+
+fun summaryLines(ctx: Context): List<String> =
+    listOf(SEPARATOR) +
+    listOf(ctx.entries.sumByDouble { it.time }.let { "Total: ${it}h (${it/8}d)" }) +
+    ctx.entries.groupBy { it.task }.mapValues { it.value.sumByDouble { it.time } }.map { (task, time) -> "$task\t${time}h (${time/8}d)" }
 
 fun allocationLines(ctx: Context): List<String> =
     listOf(SEPARATOR) + ctx.entries.map { it.toCsvLine() } + listOf("")
