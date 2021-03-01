@@ -24,7 +24,7 @@ class Context(
     val logs: MutableList<Pair<Level, String>> = mutableListOf()
     val aliases: MutableMap<String, Entry> = mutableMapOf()
     val entries: MutableList<Entry> = mutableListOf()
-    lateinit var dateLine: Line
+    var dateLine: Line? = null
 }
 
 enum class Flag {

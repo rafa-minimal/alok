@@ -93,6 +93,12 @@ private val dateRegexp = """^\s*(\d?\d)\.(\d\d)""".toRegex()
 
 fun processDate(ctx: Context, line: Line): Boolean {
     val match = dateRegexp.find(line.content) ?: return false
+
+    // If previous date line is there, let's add summary
+    ctx.dateLine?.let { dateLine ->
+        dateLine.info(ctx.entries.filter { it.date == ctx.date }.sumByDouble { it.time }.toString() + "h")
+    }
+
     val (day, month) = match.destructured
     var date = LocalDate.of(ctx.today.year, month.toInt(), day.toInt())
     // Handle January case

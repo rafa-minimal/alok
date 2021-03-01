@@ -21,7 +21,7 @@ rekrutacja=;opis;Touk - Szkolenia
 # > verbose
 
 # Alokacje
-12.09 sob.
+12.09 sob.                              ✔ 6.0h
   ITDEVESP-1 - 2h
   ABCD-123   - 3h
   support    - 1h
