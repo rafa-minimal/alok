@@ -31,7 +31,12 @@ Couldn't get it working with pattern @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:s
 data class Worklog(
     val started: OffsetDateTime,
     val timeSpentSeconds: Int,
-    val id: String? = null
+    val id: String? = null,
+    val author: WorklogAuthor? = null
+)
+
+data class WorklogAuthor(
+    val name: String
 )
 
 data class WorklogList(val maxResults: Int, val total: Int, val worklogs: List<Worklog>)
@@ -143,7 +148,7 @@ class JiraApiImpl(
     }
 
     override fun putWorklog(issue: String, date: LocalDate, timeSeconds: Int): String {
-        val existing = getWorklog(issue).filter { it.started.toLocalDate() == date }
+        val existing = getWorklog(issue).filter { it.started.toLocalDate() == date && it.author?.name == user }
         return if (existing.isEmpty()) {
             "Added " + addWorklog(issue, date, timeSeconds)
         } else {
