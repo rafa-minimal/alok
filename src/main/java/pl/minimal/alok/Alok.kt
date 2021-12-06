@@ -20,6 +20,7 @@ fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.
     return try {
         val ctx = Context(today = today, jira = jira)
         lines.forEach { process(ctx, it) }
+        finalize(ctx)
 
         val margin = min(80, max(lines.map { it.content.length + 1 }.maxOrNull() ?: 0, MIN_MARGIN))
         lines.map { it.toString(ctx.flags, margin) } +
@@ -32,6 +33,11 @@ fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.
             ""
         )
     }
+}
+
+fun finalize(ctx: Context) {
+    // Add day summary to the last day
+    ctx.dateLine?.let { addDaySummary(ctx, it) }
 }
 
 fun summaryLines(ctx: Context): List<String> =
@@ -91,13 +97,15 @@ fun processFlag(ctx: Context, line: Line): Boolean {
 
 private val dateRegexp = """^\s*(\d?\d)\.(\d\d)""".toRegex()
 
+fun addDaySummary(ctx: Context, dateLine: Line) {
+    dateLine.info(ctx.entries.filter { it.date == ctx.date }.sumByDouble { it.time }.toString() + "h")
+}
+
 fun processDate(ctx: Context, line: Line): Boolean {
     val match = dateRegexp.find(line.content) ?: return false
 
     // If previous date line is there, let's add summary
-    ctx.dateLine?.let { dateLine ->
-        dateLine.info(ctx.entries.filter { it.date == ctx.date }.sumByDouble { it.time }.toString() + "h")
-    }
+    ctx.dateLine?.let { addDaySummary(ctx, it) }
 
     val (day, month) = match.destructured
     var date = LocalDate.of(ctx.today.year, month.toInt(), day.toInt())

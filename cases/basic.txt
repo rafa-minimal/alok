@@ -7,7 +7,7 @@
 -- EXPECTED
 12.04 niedz. (pierwszy dzień alokacji)  ✔ 1.0h
     ITDEVESP-123 - 1h coś tam dłubałem
-13.04 pon.
+13.04 pon.                              ✔ 1.0h
     ITDEVESP-123 - 1h coś tam dalej...
 
 
@@ -28,7 +28,7 @@ ITDEVESP-123	2.0h (0.25d)
 > debug                                 ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
 12.04 niedz.                            ✔ 1.0h
   ITDEVESP-123 - 1h coś tam dłubałem
-13.04 pon.
+13.04 pon.                              ✔ 1.0h
   ITDEVESP-123 - 1h coś tam dalej...
 
 

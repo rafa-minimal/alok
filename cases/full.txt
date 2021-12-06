@@ -25,7 +25,7 @@ rekrutacja=;opis;Touk - Szkolenia
   ITDEVESP-1 - 2h
   ABCD-123   - 3h
   support    - 1h
-13.09 niedz.
+13.09 niedz.                            ✔ 0.0h
 
 ------
 Total: 6.0h (0.75d)
