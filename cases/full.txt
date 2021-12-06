@@ -9,6 +9,7 @@ rekrutacja=;opis;Touk - Szkolenia
 # Alokacje
 12.09
   ITDEVESP-1 - 2h
+  ITDEVBEN-1 - 4h
   ABCD-123   - 3h
   support    - 1h
 13.09
@@ -21,18 +22,21 @@ rekrutacja=;opis;Touk - Szkolenia
 # > verbose
 
 # Alokacje
-12.09 sob.                              ✔ 6.0h
+12.09 sob.                              ✔ 10.0h
   ITDEVESP-1 - 2h
-  ABCD-123   - 3h
+  ITDEVBEN-1 - 4h
+  ABCD-123   - 3h                       ❌ I don't recognize this JIRA prefix, where to allocate? Should be one of 'ITDEVESP-', 'ITDEVBEN-'
   support    - 1h
 13.09 niedz.                            ✔ 0.0h
 
 ------
-Total: 6.0h (0.75d)
+Total: 10.0h (1.25d)
 ITDEVESP-1	2.0h (0.25d)
+ITDEVBEN-1	4.0h (0.5d)
 ABCD-123	3.0h (0.375d)
 opis	1.0h (0.125d)
 ------
 2020-09-12	P4	ITDEVESP-1	P4 ESP	rgl	2,0
-2020-09-12	P4	ABCD-123	P4 ESP	rgl	3,0
+2020-09-12	P4	ITDEVBEN-1	P4 ESB	rgl	4,0
+2020-09-12	P4	ABCD-123	P4 ???	rgl	3,0
 2020-09-12		opis	CoreTech CDN	rgl	1,0

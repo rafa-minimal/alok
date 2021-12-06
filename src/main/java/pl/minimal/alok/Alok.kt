@@ -141,7 +141,15 @@ fun processAlok(ctx: Context, line: Line): Boolean {
     val timeSeconds = (timeDouble * 3600).roundToInt()
     when {
         task.matches(jiraRegex) -> {
-            val entry = playEntry(date, task, timeDouble)
+            val entry = if (task.startsWith("ITDEVESP-")) {
+                playEspEntry(date, task, timeDouble)
+            } else if (task.startsWith("ITDEVBEN-")) {
+                playEsbEntry(date, task, timeDouble)
+            } else {
+                line.error("I don't recognize this JIRA prefix, where to allocate? Should be one of 'ITDEVESP-', 'ITDEVBEN-'")
+                unknownEntry(date, task, timeDouble)
+            }
+
             ctx.entries.add(entry)
             line.trace(entry.toString())
 
