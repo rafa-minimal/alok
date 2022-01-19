@@ -17,7 +17,9 @@ class ReadWriteLoop(private val path: Path,
         var lastModified = FileTime.fromMillis(0).toInstant()
 
         while (running) {
-            // would be nice to use file change notifications instead
+            // would be nice to use file change notifications instead, but:
+            // * WatchService can watch for a whole directory only (not a single file)
+            // * we would have to swallow events that we generate when updating file
             if (lastModified.isBefore(path.modifiedDate())) {
                 val processedLines = process(Files.lines(path).toList())
                 Files.write(path, processedLines)
