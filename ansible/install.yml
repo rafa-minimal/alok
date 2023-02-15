@@ -1,7 +1,8 @@
 - hosts: 127.0.0.1
   connection: local
-  become: true
-  gather_facts: no
+  gather_facts: yes
+  vars:
+    home: "{{ ansible_env.HOME }}"
   tasks:
     - name: Create directories
       file:
@@ -9,19 +10,19 @@
         state: directory
         mode: "0755"
       with_items:
-        - /usr/share/alok
-        - /var/log/alok
-    - name: Copy alok.jar to /usr/share/alok
+        - "{{ home }}/.local/bin"
+    - name: Copy alok.jar to ~/.local/bin
       copy:
         src: ../target/alok-1.0-SNAPSHOT-jar-with-dependencies.jar
-        dest: /usr/share/alok/alok.jar
+        dest: "{{ home }}/.local/bin/alok.jar"
         mode: "0644"
-    - name: Create alok systemd service
+    - name: Create systemd service (user scope)
       copy:
         src: alok.service
-        dest: /etc/systemd/system/alok.service
+        dest: "{{ home }}/.config/systemd/user/alok.service"
     - name: Enable & (re)start alok service
       systemd:
+        scope: user
         daemon_reload: yes
         state: restarted
         enabled: yes

@@ -1,18 +1,17 @@
 [Install]
-WantedBy=multi-user.target
+WantedBy=default.target
 
 [Unit]
-After=multi-user.target
+Description=Alok
+StartLimitBurst=5
+StartLimitIntervalSec=60
 
 [Service]
 Type=simple
-WorkingDirectory=/usr/share/alok
-User=rgl
-Group=rgl
 ExecStart=/bin/java \
     -Xms128M -Xmx128M \
-    -jar /usr/share/alok/alok.jar \
-    /home/rgl/alok.txt
+    -jar .local/bin/alok.jar \
+    alok.txt
 KillMode=mixed
 KillSignal=SIGTERM
 SuccessExitStatus=143
