@@ -25,7 +25,7 @@ ITDEVESP-123	2.0h (0.25d)
   ITDEVESP-123 - 1h coś tam dalej...
 
 -- EXPECTED
-> debug                                 ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
+> debug                                 ❗ Invalid flag: 'debug', expected one of 'dry', 'quiet', 'verbose'
 12.04 niedz.                            ✔ 1.0h
   ITDEVESP-123 - 1h coś tam dłubałem
 13.04 pon.                              ✔ 1.0h
@@ -47,7 +47,7 @@ jeden
 -- EXPECTED
 jeden                                   ❌ Don't know what to do with this line
 > verbose                               ⓘ Using verbose
->debug                                  ❗ Invalid flag: 'debug', expected one of 'upload', 'dry', 'quiet', 'verbose'
+>debug                                  ❗ Invalid flag: 'debug', expected one of 'dry', 'quiet', 'verbose'
 >dry                                    ⓘ Using dry
 
 

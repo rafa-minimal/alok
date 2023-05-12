@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.LocalDate
-import java.time.ZoneId
 import java.util.concurrent.TimeUnit
 import java.util.stream.Stream
 import kotlin.streams.asSequence
@@ -19,12 +18,6 @@ import kotlin.streams.asStream
 internal class AlokTest {
 
     private val results: MutableMap<Path, StringBuilder> = mutableMapOf()
-
-    private val jira = object : JiraApi {
-        override var cookie: String = ""
-        override fun putWorklog(issue: String, date: LocalDate, timeSeconds: Int): String =
-            "Uploaded " + Worklog(date.atStartOfDay(ZoneId.systemDefault()).toOffsetDateTime(), timeSeconds)
-    }
 
     @AfterAll
     fun dumpActualResults() {
@@ -53,7 +46,7 @@ internal class AlokTest {
     fun test(file: Path, input: String, expected: String) {
         val mockToday = LocalDate.of(2020, 9, 27)
 
-        val actual = process(input.lines(), jira, mockToday)
+        val actual = process(input.lines(), mockToday)
             .joinToString("\n")
         results.getOrPut(file){ StringBuilder() }.let {
             it.append("-- TEST\n")
@@ -71,7 +64,7 @@ internal class AlokTest {
                 Files.readString(file)
                     .split("-- TEST\n")
                     .filter { it.isNotBlank() }
-                    .mapIndexed { index, testCase ->
+                    .mapIndexed { _, testCase ->
                         val inputAndExpected = testCase.split("-- EXPECTED\n")
                         if (inputAndExpected.size != 2) {
                             System.err.println("Skipping malformed test case: \n$testCase")

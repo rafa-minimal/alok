@@ -17,7 +17,6 @@ const val UPLOADED = "★"
 
 class Context(
     val today: LocalDate,
-    val jira: JiraApi
 ) {
     var flags: MutableSet<Flag> = mutableSetOf()
     var date: LocalDate? = null
@@ -28,7 +27,7 @@ class Context(
 }
 
 enum class Flag {
-    upload, dry, quiet, verbose;
+    dry, quiet, verbose;
 
     companion object {
         val valuesString = values().map { "'$it'" }.joinToString(", ", "", "")

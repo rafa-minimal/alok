@@ -19,11 +19,9 @@ fun main(args: Array<String>) {
         return
     }
 
-    JiraApiImpl().use { jira ->
-        val loop = ReadWriteLoop(path, 1000) { lines ->
-            process(lines, jira)
-        }
-        Runtime.getRuntime().addShutdownHook(Thread { loop.stop() })
-        loop.run()
+    val loop = ReadWriteLoop(path, 1000) { lines ->
+        process(lines)
     }
+    Runtime.getRuntime().addShutdownHook(Thread { loop.stop() })
+    loop.run()
 }

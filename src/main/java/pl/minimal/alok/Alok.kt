@@ -5,7 +5,6 @@ import java.time.format.TextStyle
 import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 private const val MIN_MARGIN = 40
 
@@ -15,14 +14,14 @@ private fun stripLogs(line: String) = line.split(logsSplitPattern, 2)[0]
 
 private const val SEPARATOR = "------"
 
-fun process(rawLines: List<String>, jira: JiraApi, today: LocalDate = LocalDate.now()): List<String> {
+fun process(rawLines: List<String>, today: LocalDate = LocalDate.now()): List<String> {
     val lines = rawLines.takeWhile { !it.startsWith(SEPARATOR) }.map { Line(stripLogs(it)) }
     return try {
-        val ctx = Context(today = today, jira = jira)
+        val ctx = Context(today = today)
         lines.forEach { process(ctx, it) }
         finalize(ctx)
 
-        val margin = min(80, max(lines.map { it.content.length + 1 }.maxOrNull() ?: 0, MIN_MARGIN))
+        val margin = min(80, max(lines.maxOfOrNull { it.content.length + 1 } ?: 0, MIN_MARGIN))
         lines.map { it.toString(ctx.flags, margin) } +
                 summaryLines(ctx) +
                 allocationLines(ctx)
@@ -42,8 +41,8 @@ fun finalize(ctx: Context) {
 
 fun summaryLines(ctx: Context): List<String> =
     listOf(SEPARATOR) +
-    listOf(ctx.entries.sumByDouble { it.time }.let { "Total: ${it}h (${it/8}d)" }) +
-    ctx.entries.groupBy { it.task }.mapValues { it.value.sumByDouble { it.time } }.map { (task, time) -> "$task\t${time}h (${time/8}d)" }
+    listOf(ctx.entries.sumOf { it.time }.let { "Total: ${it}h (${it/8}d)" }) +
+    ctx.entries.groupBy { it.task }.mapValues { entry -> entry.value.sumOf { it.time } }.map { (task, time) -> "$task\t${time}h (${time/8}d)" }
 
 fun allocationLines(ctx: Context): List<String> =
     listOf(SEPARATOR) + ctx.entries.map { it.toCsvLine() } + listOf("")
@@ -54,7 +53,6 @@ private val flagPattern = """^>\s?(\w+)""".toRegex()
 fun process(ctx: Context, line: Line) {
     when {
         line.content.isBlank() -> return
-        processCookie(ctx, line) -> return
         processComment(line) -> return
         processFlag(ctx, line) -> return
         processDate(ctx, line) -> return
@@ -64,15 +62,6 @@ fun process(ctx: Context, line: Line) {
             line.error("Don't know what to do with this line")
     }
 }
-
-fun processCookie(ctx: Context, line: Line): Boolean =
-    if (line.content.startsWith("cookie: ")) {
-        ctx.jira.cookie = line.content.substring("cookie: ".length).trim()
-        line.trace("Cookie set")
-        true
-    } else {
-        false
-    }
 
 fun processComment(line: Line): Boolean =
     if (line.content.startsWith('#')) {
@@ -98,7 +87,7 @@ fun processFlag(ctx: Context, line: Line): Boolean {
 private val dateRegexp = """^\s*(\d?\d)\.(\d\d)""".toRegex()
 
 fun addDaySummary(ctx: Context, dateLine: Line) {
-    dateLine.info(ctx.entries.filter { it.date == ctx.date }.sumByDouble { it.time }.toString() + "h")
+    dateLine.info(ctx.entries.filter { it.date == ctx.date }.sumOf { it.time }.toString() + "h")
 }
 
 fun processDate(ctx: Context, line: Line): Boolean {
@@ -126,7 +115,7 @@ fun processDate(ctx: Context, line: Line): Boolean {
     return true
 }
 
-private val alokRegexp = """^\s*$UPLOADED?\s*([\w\d -]+?)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
+private val alokRegexp = """^\s*$UPLOADED?\s*([\w -]+?)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
 private val jiraRegex = """[A-Z]+-[0-9]+""".toRegex()
 
 fun processAlok(ctx: Context, line: Line): Boolean {
@@ -138,7 +127,6 @@ fun processAlok(ctx: Context, line: Line): Boolean {
     }
     val (task, timeStr) = match.destructured
     val timeDouble = timeStr.replace(',', '.').toDouble()
-    val timeSeconds = (timeDouble * 3600).roundToInt()
     when {
         task.matches(jiraRegex) -> {
             val entry = if (task.startsWith("ITDEVESP-")) {
@@ -152,20 +140,6 @@ fun processAlok(ctx: Context, line: Line): Boolean {
 
             ctx.entries.add(entry)
             line.trace(entry.toString())
-
-            if (Flag.upload in ctx.flags && !line.content.contains(UPLOADED)) {
-                try {
-                    val result= ctx.jira.putWorklog(entry.task, date, timeSeconds)
-                    line.info(result)
-                    line.content = if (line.content.startsWith("  ")) {
-                        line.content.replaceFirst(" ", UPLOADED)
-                    } else {
-                        UPLOADED + ' ' + line.content
-                    }
-                } catch (e: JiraError) {
-                    line.error(e.message ?: e.toString())
-                }
-            }
         }
         task in ctx.aliases -> {
             val entry = ctx.aliases.getValue(task).copy(date = date, time = timeDouble)
