@@ -13,7 +13,7 @@ Install as a local service (no, `-k` wouldn't work in this case, we need sudo wi
 ```
 mvn clean package
 cd ansible
-sudo ansible-playbook install.yml
+ansible-playbook install.yml
 ```
 
 # Client certificate
