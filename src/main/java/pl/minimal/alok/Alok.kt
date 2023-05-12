@@ -153,12 +153,12 @@ fun processAlok(ctx: Context, line: Line): Boolean {
     return true
 }
 
-private val aliasRegexp = """^(.*)=(.*);(.*);(.*)""".toRegex()
+private val aliasRegexp = """^(.*)=(.*);(.*)""".toRegex()
 
 fun processAlias(ctx: Context, line: Line): Boolean {
     val match = aliasRegexp.find(line.content) ?: return false
-    val (alias, typ, task, centrum) = match.destructured
-    val entryTemplate = Entry(ctx.today, typ, task, centrum, 0.0)
+    val (alias, centrum, task) = match.destructured
+    val entryTemplate = Entry(ctx.today, task, centrum, 0.0)
     ctx.aliases[alias] = entryTemplate
     line.trace("Alias: $alias -> $entryTemplate")
     return true

@@ -87,14 +87,13 @@ private val dateFormat = DateTimeFormatter.ISO_LOCAL_DATE
 
 data class Entry(
     val date: LocalDate,
-    val typ: String,
     val task: String,
     val centrum: String,
     val time: Double
 ) {
-    fun toCsvLine() = "${date.format(dateFormat)}\t$typ\t$task\t$centrum\trgl\t${time.toString().replace('.',',')}"
+    fun toCsvLine() = "${date.format(dateFormat)}\t$task\t$centrum\trgl\t${time.toString().replace('.',',')}"
 }
 
-fun playEspEntry(date: LocalDate, task: String, time: Double) = Entry(date, "P4", task, "P4 ESP", time)
-fun playEsbEntry(date: LocalDate, task: String, time: Double) = Entry(date, "P4", task, "P4 ESB", time)
-fun unknownEntry(date: LocalDate, task: String, time: Double) = Entry(date, "P4", task, "P4 ???", time)
+fun playEspEntry(date: LocalDate, task: String, time: Double) = Entry(date, task, "P4 ESP", time)
+fun playEsbEntry(date: LocalDate, task: String, time: Double) = Entry(date, task, "P4 ESB", time)
+fun unknownEntry(date: LocalDate, task: String, time: Double) = Entry(date, task, "P4 ???", time)
