@@ -9,7 +9,7 @@ mvn clean package
 ```
 
 # Install
-Install as a local service (no, `-k` wouldn't work in this case, we need sudo with ansible)
+Install as a user service
 ```
 mvn clean package
 cd ansible

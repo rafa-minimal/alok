@@ -91,7 +91,7 @@ data class Entry(
     val centrum: String,
     val time: Double
 ) {
-    fun toCsvLine() = "${date.format(dateFormat)}\t$centrum\t$task\trgl\t${time.toString().replace('.',',')}"
+    fun toCsvLine() = "${date.format(dateFormat)}\trgl\t$centrum\t$task\t${time.toString().replace('.',',')}"
 }
 
 fun playEspEntry(date: LocalDate, task: String, time: Double) = Entry(date, task, "P4 ESP", time)
