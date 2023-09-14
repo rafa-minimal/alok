@@ -13,21 +13,18 @@ enum class Level(val char: Char, val priority: Int) {
     }
 }
 
-const val UPLOADED = "★"
-
 class Context(
     val today: LocalDate,
 ) {
     var flags: MutableSet<Flag> = mutableSetOf()
     var date: LocalDate? = null
-    val logs: MutableList<Pair<Level, String>> = mutableListOf()
     val aliases: MutableMap<String, Entry> = mutableMapOf()
     val entries: MutableList<Entry> = mutableListOf()
     var dateLine: Line? = null
 }
 
 enum class Flag {
-    dry, quiet, verbose;
+    quiet, verbose;
 
     companion object {
         val valuesString = values().map { "'$it'" }.joinToString(", ", "", "")

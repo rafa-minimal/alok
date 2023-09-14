@@ -115,7 +115,7 @@ fun processDate(ctx: Context, line: Line): Boolean {
     return true
 }
 
-private val alokRegexp = """^\s*$UPLOADED?\s*([\w -]+?)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
+private val alokRegexp = """^\s*([\w -]+?)\s+-\s+(\d+(?:[,.]\d+)?)h""".toRegex()
 private val jiraRegex = """[A-Z]+-[0-9]+""".toRegex()
 
 fun processAlok(ctx: Context, line: Line): Boolean {

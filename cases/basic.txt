@@ -18,14 +18,12 @@ ITDEVESP-123	2.0h (0.25d)
 2020-04-12	rgl	P4 ESP	ITDEVESP-123	1,0
 2020-04-13	rgl	P4 ESP	ITDEVESP-123	1,0
 -- TEST
-> debug
 12.04
   ITDEVESP-123 - 1h coś tam dłubałem
 13.04
   ITDEVESP-123 - 1h coś tam dalej...
 
 -- EXPECTED
-> debug                                 ❗ Invalid flag: 'debug', expected one of 'dry', 'quiet', 'verbose'
 12.04 niedz.                            ✔ 1.0h
   ITDEVESP-123 - 1h coś tam dłubałem
 13.04 pon.                              ✔ 1.0h
@@ -41,14 +39,12 @@ ITDEVESP-123	2.0h (0.25d)
 -- TEST
 jeden
 > verbose
->debug
 >dry
 
 -- EXPECTED
 jeden                                   ❌ Don't know what to do with this line
 > verbose                               ⓘ Using verbose
->debug                                  ❗ Invalid flag: 'debug', expected one of 'dry', 'quiet', 'verbose'
->dry                                    ⓘ Using dry
+>dry                                    ❗ Invalid flag: 'dry', expected one of 'quiet', 'verbose'
 
 
 ------

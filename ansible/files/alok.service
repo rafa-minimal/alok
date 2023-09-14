@@ -8,10 +8,7 @@ StartLimitIntervalSec=60
 
 [Service]
 Type=simple
-ExecStart=/bin/java \
-    -Xms128M -Xmx128M \
-    -jar .local/bin/alok.jar \
-    alok.txt
+ExecStart=/home/rgl/.local/bin/alok alok.txt
 KillMode=mixed
 KillSignal=SIGTERM
 SuccessExitStatus=143
